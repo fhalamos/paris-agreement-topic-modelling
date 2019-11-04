@@ -129,6 +129,7 @@ final_summary_words <- final_summary_words %>% group_by(topic, word) %>% filter(
 
 word_topic_freq <- left_join(final_summary_words, original_tf, by = c("word" = "term"))
 
+#You need a images folder for this to work
 for(i in 1:length(unique(word_topic_freq$topic)))
 {
   

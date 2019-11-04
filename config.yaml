@@ -3,10 +3,10 @@ countries: ["usa", "england"]
 
 #Argentina, Australia, Austria, Belgium, Bulgaria, Canada, Chile, Taiwan, Croatia, Czech Republic, Denmark, Finland, France, Germany, Iceland, Israel, Japan, Korea, Latvia, Lithuania, Mexico, Netherlands, New Zealand, Norway, Philippines, Portugal, Russia, Slovak Republic, Slovenia, South Africa, Spain, Sweden, Switzerland, Turkey, Great Britain, United States
 
-keywords: ["climate change", "paris agreement"]
+keywords: ["climate change"]
 
 since_date: "2010-01-01"
 
-until_date: "2017-01-01"
+until_date: "2011-12-31"
 
 within_radius: "1000mi"
