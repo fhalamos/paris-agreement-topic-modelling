@@ -11,9 +11,6 @@ def main():
     countries = config['countries']
     keywords = config['keywords']
 
-    #List of tweets that contain any of our keywords
-    tweets = list()
-
     #Folder where we will save tweets
     if not os.path.exists("downloaded_tweets"):
         os.makedirs("downloaded_tweets")
@@ -21,18 +18,23 @@ def main():
     #For each country, search all keywords and append results to our list of tweets
     for country in countries:
 
+        #List of tweets that contain any of our keywords
+        tweets = list()
+        tweet_id=1
+
         outputFile = open("downloaded_tweets/"+country+"_output.csv", "w+", encoding="utf8")
-        outputFile.write('date,username,to,replies,retweets,favorites,text,geo,mentions,hashtags,id,permalink\n')
+        outputFile.write('id,date,username,to,replies,retweets,favorites,text,geo,mentions,hashtags,id,permalink\n')
 
         for keyword in keywords:
-            #In the meantime getting max 10 tweets per keyword
-            tweets.extend(querySearch(keyword,country,10))
+            #In the meantime getting max 100 tweets per keyword
+            tweets.extend(querySearch(keyword,country,100))
 
         for t in tweets:
             print(t.text)
             print("\n")
 
-            data = [t.date.strftime("%Y-%m-%d %H:%M:%S"),
+            data = [tweet_id,
+                    t.date.strftime("%Y-%m-%d %H:%M:%S"),
                     t.username,
                     t.to or '',
                     t.replies,
@@ -44,6 +46,9 @@ def main():
                     t.hashtags,
                     t.id,
                     t.permalink]
+
+            tweet_id+=1
+
             data[:] = [i if isinstance(i, str) else str(i) for i in data]
             outputFile.write(','.join(data) + '\n')
 
