@@ -8,14 +8,17 @@ library(tm)
 library(wordcloud)
 library(RColorBrewer)
 
+library(webshot)
+library("htmlwidgets")
+
+
 #Reference: https://towardsdatascience.com/beginners-guide-to-lda-topic-modelling-with-r-e57a5a8e7a25#https://www.kaggle.com/crowdflower/first-gop-debate-twitter-sentiment
 
 #1.Load data
 data <- read.csv(file.choose())
 
 #select text and id column. looking at top 5000 rows
-data <- data %>% select(text,id) %>% head(5000)
-
+data <- data %>% select(id, text) %>% head(5000)
 
 #2. Data cleaning
 
@@ -126,16 +129,24 @@ final_summary_words <- final_summary_words %>% group_by(topic, word) %>% filter(
 
 word_topic_freq <- left_join(final_summary_words, original_tf, by = c("word" = "term"))
 
-
 for(i in 1:length(unique(word_topic_freq$topic)))
 {
+  
+  filename <- paste(c(i,"_topic.png"), collapse = "")
+  directory_and_filename <- paste(c("images",filename), collapse = "/")
+  
+  png(directory_and_filename, width=12, height=8, units="in", res=300)
+  
   wordcloud(words = subset(word_topic_freq ,topic == i)$word,
             freq = subset(word_topic_freq ,topic == i)$term_freq,
             min.freq = 1,
             max.words=200, random.order=FALSE, rot.per=0.35, 
             colors=brewer.pal(8, "Dark2"))
+  
+  dev.off()
 }
-dev.off()
+
+
 
 
 
