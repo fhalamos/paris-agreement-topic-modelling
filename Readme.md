@@ -9,6 +9,9 @@ Then we will do something cool with those topics.
 - download_tweets.py: python script that download tweets that contain words given a specific array of keywords
 
 - topic_modeling.R: topic modeling given Sentiment.csv for the moment
+- models folder: contains trained models
+
+- config.yaml: configuration file
 
 
 ## Setup

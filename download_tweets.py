@@ -1,31 +1,68 @@
 import GetOldTweets3 as got
+import yaml
+import os
+
+config = yaml.load(open('config.yaml', 'r'))
+
 
 def main():
 
-    #1. Get list of tweets associated to our key words
-    key_words = ["paris agreement", "climate change"]
+    #Access countries and keywords to be search from config file
+    countries = config['countries']
+    keywords = config['keywords']
 
     #List of tweets that contain any of our keywords
     tweets = list()
 
-    #For each keyword, make a search and append results to our list of tweets
-    for key_word in key_words:
-         #In the meantime getting max 5 tweets per keyword
-        tweets.extend(querySearch(key_word,5))
+    #Folder where we will save tweets
+    if not os.path.exists("downloaded_tweets"):
+        os.makedirs("downloaded_tweets")
 
-    #In the mean time just printing, should rather save them in a .csv
-    for tweet in tweets:
-        print(tweet.text)
-        print("\n")
+    #For each country, search all keywords and append results to our list of tweets
+    for country in countries:
 
+        outputFile = open("downloaded_tweets/"+country+"_output.csv", "w+", encoding="utf8")
+        outputFile.write('date,username,to,replies,retweets,favorites,text,geo,mentions,hashtags,id,permalink\n')
 
-def querySearch(search_text, maxTweets=None):
+        for keyword in keywords:
+            #In the meantime getting max 10 tweets per keyword
+            tweets.extend(querySearch(keyword,country,10))
 
-    if(maxTweets):
-        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(search_text)\
-                                               .setMaxTweets(maxTweets)
-    else:
-        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(search_text)
+        for t in tweets:
+            print(t.text)
+            print("\n")
+
+            data = [t.date.strftime("%Y-%m-%d %H:%M:%S"),
+                    t.username,
+                    t.to or '',
+                    t.replies,
+                    t.retweets,
+                    t.favorites,
+                    '"'+t.text.replace('"','""')+'"',
+                    t.geo,
+                    t.mentions,
+                    t.hashtags,
+                    t.id,
+                    t.permalink]
+            data[:] = [i if isinstance(i, str) else str(i) for i in data]
+            outputFile.write(','.join(data) + '\n')
+
+        outputFile.flush()
+        #Remember to clean tweets! We are gettings tweets from accounts that have the keyword in their name, but not in the tweets text
+
+def querySearch(keyword, country, maxTweets):
+
+    since_date = config['since_date']
+    until_date = config['until_date']
+    within_radius = config['within_radius']
+
+    tweetCriteria = got.manager.TweetCriteria()\
+                            .setQuerySearch(keyword)\
+                            .setMaxTweets(maxTweets)\
+                            .setSince(since_date)\
+                            .setUntil(until_date)\
+                            .setNear(country)\
+                            .setWithin(within_radius)
 
     tweets = got.manager.TweetManager.getTweets(tweetCriteria)
 
