@@ -15,10 +15,9 @@ Preliminary results can be seen [here](https://docs.google.com/document/d/1NvOWn
 
 - topic_modeling.R: topic modeling given .csv files with tweets data
 
-- models folder: contains trained models
+- topic_modelling_images folder: contains visual representations of topic models results
 
 - config.yaml: configuration file specifying parameters for analysis (ex: keywords looked in tweets, countries analyzed, etc).
-
 
 ## Setup
 - pip install [GetOldTweets3](https://github.com/Mottl/GetOldTweets3), library used to download tweets.
