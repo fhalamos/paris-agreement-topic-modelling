@@ -23,6 +23,6 @@ Preliminary results can be seen [here](https://docs.google.com/document/d/1NvOWn
 ## Setup
 - pip install [GetOldTweets3](https://github.com/Mottl/GetOldTweets3), library used to download tweets.
 
-## References
-- Twitter data cleaning: https://scholarworks.wm.edu/cgi/viewcontent.cgi?article=2406&context=honorstheses
-- Project scope: https://publichealth.jmir.org/2018/1/e16/
+<!-- ## References -->
+<!-- - Twitter data cleaning: https://scholarworks.wm.edu/cgi/viewcontent.cgi?article=2406&context=honorstheses -->
+<!-- - Project scope: https://publichealth.jmir.org/2018/1/e16/ -->
