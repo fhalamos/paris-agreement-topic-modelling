@@ -11,7 +11,7 @@ Then we will do something cool with those topics.
 - topic_modeling.R: topic modeling given Sentiment.csv for the moment
 - models folder: contains trained models
 
-- config.yaml: configuration file
+- config.yaml: configuration file specifying parameters for analysis (ex: keywords looked in tweets, countries analyzed, etc).
 
 
 ## Setup
