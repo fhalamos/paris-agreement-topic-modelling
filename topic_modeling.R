@@ -9,7 +9,7 @@ library(wordcloud)
 library(RColorBrewer)
 
 library(webshot)
-library("htmlwidgets")
+library(htmlwidgets)
 
 
 #Reference: https://towardsdatascience.com/beginners-guide-to-lda-topic-modelling-with-r-e57a5a8e7a25#https://www.kaggle.com/crowdflower/first-gop-debate-twitter-sentiment
@@ -33,6 +33,14 @@ text_cleaning_tokens$word <- gsub('[[:punct:]]+', '', text_cleaning_tokens$word)
 text_cleaning_tokens <- text_cleaning_tokens %>% filter(!(nchar(word) == 1))%>% 
   anti_join(stop_words)
 
+#Lets remove "climate" "change" "climate_change" "http"
+words_to_remove <- c("climate","change","climate_change", "climatechange", "http", "bitly")
+
+text_cleaning_tokens <- 
+  text_cleaning_tokens %>%
+  filter(!grepl(paste(words_to_remove, collapse="|"), word))
+
+
 tokens <- text_cleaning_tokens %>% filter(!(word==""))
 tokens <- tokens %>% mutate(ind = row_number())
 tokens <- tokens %>% group_by(id) %>% mutate(ind = row_number()) %>%
@@ -40,6 +48,8 @@ tokens <- tokens %>% group_by(id) %>% mutate(ind = row_number()) %>%
 tokens [is.na(tokens)] <- ""
 tokens <- tidyr::unite(tokens, text,-id,sep =" " )
 tokens$text <- trimws(tokens$text)
+
+
 
 
 #3. Model building
@@ -59,11 +69,11 @@ rownames(original_tf) <- 1:nrow(original_tf)
 
 
 # Eliminate words appearing less than 2 times or in more than half of the
-# documents
+# documents... why morre than half?
 vocabulary <- tf$term[ tf$term_freq > 1 & tf$doc_freq < nrow(dtm) / 2 ]
 dtm = dtm #??
 
-#We set k = 20 (20 topics)
+#We set k = 20 (max number of possible topics)
 k_list <- seq(1, 20, by = 1)
 
 #Create model directory
@@ -134,7 +144,7 @@ for(i in 1:length(unique(word_topic_freq$topic)))
 {
   
   filename <- paste(c(i,"_topic.png"), collapse = "")
-  directory_and_filename <- paste(c("images",filename), collapse = "/")
+  directory_and_filename <- paste(c("topic_modelling_images",filename), collapse = "/")
   
   png(directory_and_filename, width=12, height=8, units="in", res=300)
   
