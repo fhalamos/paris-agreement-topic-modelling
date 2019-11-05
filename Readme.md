@@ -1,8 +1,13 @@
-# Paris-agreement-topic-modelling
+# Comparing twitter data and surveys data: a topic modelling approach
 
-In this project we will be downloading tweets and running topic modeling with them.
+## Goal of study
 
-Then we will do something cool with those topics.
+In this project we are aiming to study if twitter data is a good proxy of masses opinion, and in particular, if they reveal the same information as traditional surveys.
+
+To acomplish this, we will study tweets related to climate change. In particular, we will develop topic modelling techniques so as to discover the most important subtopics of climate change people speak about in twitter. After that, we will compare these topics with those expressed by people in survey questions that directly ask for the most important topics in this issues. This way, we aim to discover is the topics revealed by twitter data are or not the same as the ones recovered by surveys.
+
+Preliminary results can be seen [here](https://docs.google.com/document/d/1NvOWnngMwzfGeFFaSJ-vzFFmbpmuBK5nRDoR7XXlWgM/edit?usp=sharing)
+
 
 ## Files in repo
 
