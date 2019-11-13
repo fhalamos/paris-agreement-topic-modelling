@@ -7,16 +7,12 @@ config = yaml.load(open('config.yaml', 'r'))
 
 def main():
 
-    #Access countries and keywords to be search from config file
-    countries = config['countries']
-    keywords = config['keywords']
-
     #Folder where we will save tweets
     if not os.path.exists("downloaded_tweets"):
         os.makedirs("downloaded_tweets")
 
     #For each country, search all keywords and append results to our list of tweets
-    for country in countries:
+    for country in config['countries']:
 
         #List of tweets that contain any of our keywords
         tweets = list()
@@ -25,14 +21,11 @@ def main():
         outputFile = open("downloaded_tweets/"+country+"_output.csv", "w+", encoding="utf8")
         outputFile.write('id,date,username,to,replies,retweets,favorites,text,geo,mentions,hashtags,id,permalink\n')
 
-        for keyword in keywords:
+        for keyword in config['keywords']:
             #In the meantime getting max 100 tweets per keyword
-            tweets.extend(querySearch(keyword,country,100))
+            tweets.extend(querySearch(keyword,country,config['max_twees']))
 
         for t in tweets:
-            print(t.text)
-            print("\n")
-
             data = [tweet_id,
                     t.date.strftime("%Y-%m-%d %H:%M:%S"),
                     t.username,
