@@ -1,9 +1,11 @@
-countries: ["england"]
+countries: ["USA"]
 
-keywords: ["climate change"]
+keywords: ["environment"]
 
 since_date: "2010-01-01"
 
 until_date: "2011-12-31"
 
 within_radius: "1000mi"
+
+max_twees: 1000
