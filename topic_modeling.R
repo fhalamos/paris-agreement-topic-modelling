@@ -22,35 +22,58 @@ data <- data %>% select(id, text) %>% head(5000)
 
 #2. Data cleaning
 
-data$text <- sub("RT.*:", "", data$text)
-data$text <- sub("@.* ", "", data$text)
 
+data$text <- sub("RT.*", "", data$text) #Remove retweets
+data$text <- sub("@.*", "", data$text) #Remove mentions
+data$text <- sub("#.*", "", data$text) #Remove hashtags
+
+data$text <- sub("//.*", "", data$text) #Remove double //
+data$text <- sub("http.*", "", data$text) #Remove anything that begins with http
+
+#data$text[grepl("@.*", data$text)]
+
+#Separate tweets in words, keeping an id for each word
 text_cleaning_tokens <- data %>% 
   tidytext::unnest_tokens(word, text)
 
+#Searches
+#text_cleaning_tokens$word[grepl('[[:digit:]]+', text_cleaning_tokens$word)]
+
+#Remove words that have numbers
 text_cleaning_tokens$word <- gsub('[[:digit:]]+', '', text_cleaning_tokens$word)
+
+#Remove words that have punctuations
 text_cleaning_tokens$word <- gsub('[[:punct:]]+', '', text_cleaning_tokens$word)
+
+#Remove words with one character and stop_words
 text_cleaning_tokens <- text_cleaning_tokens %>% filter(!(nchar(word) == 1))%>% 
   anti_join(stop_words)
 
-#Lets remove "climate" "change" "climate_change" "http"
-words_to_remove <- c("climate","change","climate_change", "climatechange", "http", "bitly")
+
+#Remove specific words chosen by hand
+words_to_remove <- c("http", "environment")
 
 text_cleaning_tokens <- 
   text_cleaning_tokens %>%
   filter(!grepl(paste(words_to_remove, collapse="|"), word))
 
-
+#Remove empty tokens
 tokens <- text_cleaning_tokens %>% filter(!(word==""))
+
+#Create column with row number
 tokens <- tokens %>% mutate(ind = row_number())
+
 tokens <- tokens %>% group_by(id) %>% mutate(ind = row_number()) %>%
   tidyr::spread(key = ind, value = word)
+
+
 tokens [is.na(tokens)] <- ""
 tokens <- tidyr::unite(tokens, text,-id,sep =" " )
 tokens$text <- trimws(tokens$text)
 
 
-
+#head(data$text[data$text!=""],2)
+#head(tokens)
 
 #3. Model building
 
