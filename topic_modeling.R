@@ -21,23 +21,16 @@ data <- read.csv(file.choose())
 data <- data %>% select(id, text) %>% head(5000)
 
 #2. Data cleaning
-
-
 data$text <- sub("RT.*", "", data$text) #Remove retweets
 data$text <- sub("@.*", "", data$text) #Remove mentions
 data$text <- sub("#.*", "", data$text) #Remove hashtags
 
-data$text <- sub("//.*", "", data$text) #Remove double //
+data$text <- sub("//.*", "", data$text) #Remove anything that begins with //
 data$text <- sub("http.*", "", data$text) #Remove anything that begins with http
-
-#data$text[grepl("@.*", data$text)]
 
 #Separate tweets in words, keeping an id for each word
 text_cleaning_tokens <- data %>% 
   tidytext::unnest_tokens(word, text)
-
-#Searches
-#text_cleaning_tokens$word[grepl('[[:digit:]]+', text_cleaning_tokens$word)]
 
 #Remove words that have numbers
 text_cleaning_tokens$word <- gsub('[[:digit:]]+', '', text_cleaning_tokens$word)
@@ -45,14 +38,12 @@ text_cleaning_tokens$word <- gsub('[[:digit:]]+', '', text_cleaning_tokens$word)
 #Remove words that have punctuations
 text_cleaning_tokens$word <- gsub('[[:punct:]]+', '', text_cleaning_tokens$word)
 
-#Remove words with one character and stop_words
+#Remove words with one character and remove stop_words
 text_cleaning_tokens <- text_cleaning_tokens %>% filter(!(nchar(word) == 1))%>% 
   anti_join(stop_words)
 
-
 #Remove specific words chosen by hand
-words_to_remove <- c("http", "environment")
-
+words_to_remove <- c("environment", "environmental")
 text_cleaning_tokens <- 
   text_cleaning_tokens %>%
   filter(!grepl(paste(words_to_remove, collapse="|"), word))
@@ -60,20 +51,28 @@ text_cleaning_tokens <-
 #Remove empty tokens
 tokens <- text_cleaning_tokens %>% filter(!(word==""))
 
+#Seems like this is useless
 #Create column with row number
-tokens <- tokens %>% mutate(ind = row_number())
+#tokens <- tokens %>% mutate(ind = row_number())
 
+#Re group tokens by tweets in a df
 tokens <- tokens %>% group_by(id) %>% mutate(ind = row_number()) %>%
   tidyr::spread(key = ind, value = word)
 
-
+#Remove any possible empty cells
 tokens [is.na(tokens)] <- ""
+
+#Joining the df to create text
 tokens <- tidyr::unite(tokens, text,-id,sep =" " )
+
+#Remove whitespaces
 tokens$text <- trimws(tokens$text)
 
 
-#head(data$text[data$text!=""],2)
-#head(tokens)
+#Searches for debugging
+#tokens$text [grepl("@.*", tokens$text )]
+#text_cleaning_tokens$word[grepl('[[:digit:]]+', text_cleaning_tokens$word)]
+
 
 #3. Model building
 
@@ -92,9 +91,10 @@ rownames(original_tf) <- 1:nrow(original_tf)
 
 
 # Eliminate words appearing less than 2 times or in more than half of the
-# documents... why morre than half?
-vocabulary <- tf$term[ tf$term_freq > 1 & tf$doc_freq < nrow(dtm) / 2 ]
-dtm = dtm #??
+# documents... why more than half?
+#vocabulary <- tf$term[ tf$term_freq > 1 & tf$doc_freq < nrow(dtm) / 2 ]
+vocabulary <- tf$term[ tf$term_freq > 1]
+#dtm = dtm #??
 
 #We set k = 20 (max number of possible topics)
 k_list <- seq(1, 20, by = 1)
