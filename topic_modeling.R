@@ -43,7 +43,7 @@ text_cleaning_tokens <- text_cleaning_tokens %>% filter(!(nchar(word) == 1))%>%
   anti_join(stop_words)
 
 #Remove specific words chosen by hand
-words_to_remove <- c("environment", "environmental")
+words_to_remove <- c("#environment", "environmental", "environment", "construction", "links", "network", "news")
 text_cleaning_tokens <- 
   text_cleaning_tokens %>%
   filter(!grepl(paste(words_to_remove, collapse="|"), word))
@@ -70,8 +70,12 @@ tokens$text <- trimws(tokens$text)
 
 
 #Searches for debugging
-#tokens$text [grepl("@.*", tokens$text )]
+tokens$text [grepl("issue updates.*", tokens$text )]
 #text_cleaning_tokens$word[grepl('[[:digit:]]+', text_cleaning_tokens$word)]
+#length(tokens$text)
+
+#Remove duplicates
+tokens <- tokens[!duplicated(tokens$text)]
 
 
 #3. Model building
@@ -92,8 +96,8 @@ rownames(original_tf) <- 1:nrow(original_tf)
 
 # Eliminate words appearing less than 2 times or in more than half of the
 # documents... why more than half?
-#vocabulary <- tf$term[ tf$term_freq > 1 & tf$doc_freq < nrow(dtm) / 2 ]
-vocabulary <- tf$term[ tf$term_freq > 1]
+vocabulary <- tf$term[ tf$term_freq > 1 & tf$doc_freq < nrow(dtm) / 2 ]
+#vocabulary <- tf$term[ tf$term_freq > 1]
 #dtm = dtm #??
 
 #We set k = 20 (max number of possible topics)
@@ -133,7 +137,7 @@ ggplot(coherence_mat, aes(x = k, y = coherence)) +
   scale_x_continuous(breaks = seq(1,20,1)) + ylab("Coherence")
 
 
-model <- model_list[which.max(coherence_mat$coherence)][[ 1 ]]
+model <- model_list[which.max(coherence_mat$coherence)][[ 1 ]]# if we want k to be the one with max coherence
 model$top_terms <- GetTopTerms(phi = model$phi, M = 20)
 top20_wide <- as.data.frame(model$top_terms)
 
