@@ -1,11 +1,28 @@
 import GetOldTweets3 as got
 import yaml
 import os
+import sys
 
 config = yaml.load(open('config.yaml', 'r'))
 
 
 def main():
+
+    #args are expected to come in the following order: max_tweets, keyword_1, keyword_2, etc.
+
+
+    n_args = len(sys.argv)
+    print(n_args)
+
+    max_tweets = int(sys.argv[1])
+    keywords = []
+    for i in range(2, n_args):
+        keywords.append(sys.argv[i])
+
+    print("max_twees")
+    print(max_tweets)
+    print("keywords")
+    print(keywords)
 
     #Folder where we will save tweets
     if not os.path.exists("downloaded_tweets"):
@@ -14,16 +31,22 @@ def main():
     #For each country, search all keywords and append results to our list of tweets
     for country in config['countries']:
 
+        #Create output file
+        output_file_name = country+"-"+str(max_tweets)+"-"+"_".join(keywords)+".csv"
+        outputFile = open("downloaded_tweets/"+output_file_name, "w+", encoding="utf8")
+        outputFile.write('id,date,username,to,replies,retweets,favorites,text,geo,mentions,hashtags,id,permalink\n')
+
         #List of tweets that contain any of our keywords
         tweets = list()
         tweet_id=1
 
-        outputFile = open("downloaded_tweets/"+country+"_output.csv", "w+", encoding="utf8")
-        outputFile.write('id,date,username,to,replies,retweets,favorites,text,geo,mentions,hashtags,id,permalink\n')
+        #Case we wanna use keywords from configfile instead of manually imputed by user
+        #for keyword in config['keywords']:
+        for keyword in keywords:#config['keywords']:
+            tweets.extend(querySearch(keyword,country,max_tweets))
 
-        for keyword in config['keywords']:
-            #In the meantime getting max 100 tweets per keyword
-            tweets.extend(querySearch(keyword,country,config['max_twees']))
+            #Case we wanna use keywords from configfile instead of manually imputed by user
+            #tweets.extend(querySearch(keyword,country,config['max_twees']))
 
         for t in tweets:
             data = [tweet_id,

@@ -13,6 +13,9 @@ Preliminary results can be seen [here](https://docs.google.com/document/d/1NvOWn
 
 - download_tweets.py: python script that download tweets that contain words given a specific array of keywords
 
+To call, inlcude args max_tweets, keyword_1, keyword_2, etc.
+Ex: python3 download_tweets.py 100 \#environment environment
+
 - topic_modeling.R: topic modeling given .csv files with tweets data
 
 - topic_modelling_images folder: contains visual representations of topic models results
