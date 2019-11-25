@@ -43,7 +43,9 @@ def main():
         #Case we wanna use keywords from configfile instead of manually imputed by user
         #for keyword in config['keywords']:
         for keyword in keywords:#config['keywords']:
-            tweets.extend(querySearch(keyword,country,max_tweets))
+            tweets_found = querySearch(keyword,country,max_tweets)
+            tweets.extend(tweets_found)
+            print("Founded "+str(len(tweets_found))+" for "+keyword)
 
             #Case we wanna use keywords from configfile instead of manually imputed by user
             #tweets.extend(querySearch(keyword,country,config['max_twees']))
@@ -84,6 +86,8 @@ def querySearch(keyword, country, maxTweets):
                             .setUntil(until_date)\
                             .setNear(country)\
                             .setWithin(within_radius)
+
+    print(tweetCriteria)
 
     tweets = got.manager.TweetManager.getTweets(tweetCriteria)
 
