@@ -11,11 +11,19 @@ library(RColorBrewer)
 library(webshot)
 library(htmlwidgets)
 
+library(ggplot2)
 
 #Reference: https://towardsdatascience.com/beginners-guide-to-lda-topic-modelling-with-r-e57a5a8e7a25#https://www.kaggle.com/crowdflower/first-gop-debate-twitter-sentiment
 
 #1.Load data
-data <- read.csv(file.choose())
+file <-file.choose()
+data <- read.csv(file)
+
+#Save name of file loaded
+full_file_dir <-strsplit(file,"/")[[1]]
+file_name_with_extension <- full_file_dir[length(full_file_dir)]
+name_file_loaded <- strsplit(file_name_with_extension,".csv")[[1]]
+
 
 #select text and id column. looking at top 5000 rows
 data <- data %>% select(id, text) %>% head(5000)
@@ -43,7 +51,7 @@ text_cleaning_tokens <- text_cleaning_tokens %>% filter(!(nchar(word) == 1))%>%
   anti_join(stop_words)
 
 #Remove specific words chosen by hand
-words_to_remove <- c("#environment", "environmental", "environment", "construction", "links", "network", "news")
+words_to_remove <- c("#environment", "environment", "#environmental", "environmental")
 text_cleaning_tokens <- 
   text_cleaning_tokens %>%
   filter(!grepl(paste(words_to_remove, collapse="|"), word))
@@ -129,12 +137,21 @@ coherence_mat <- data.frame(k = sapply(model_list, function(x) nrow(x$phi)),
                             coherence = sapply(model_list, function(x) mean(x$coherence)), 
                             stringsAsFactors = FALSE)
 
-library(ggplot2)
+
+
+
+
+filename <- paste(c(name_file_loaded,"coherence_plot.png"), collapse = "_")
+png(filename, width=12, height=8, units="in", res=300)
+
 ggplot(coherence_mat, aes(x = k, y = coherence)) +
   geom_point() +
   geom_line(group = 1)+
   ggtitle("Best Topic by Coherence Score") + theme_minimal() +
   scale_x_continuous(breaks = seq(1,20,1)) + ylab("Coherence")
+
+dev.off()
+
 
 
 model <- model_list[which.max(coherence_mat$coherence)][[ 1 ]]# if we want k to be the one with max coherence
@@ -169,9 +186,10 @@ word_topic_freq <- left_join(final_summary_words, original_tf, by = c("word" = "
 #You need a images folder for this to work
 for(i in 1:length(unique(word_topic_freq$topic)))
 {
+  file_name <- paste(c(i,"topic.png"), collapse = "_")
   
-  filename <- paste(c(i,"_topic.png"), collapse = "")
-  directory_and_filename <- paste(c("topic_modelling_images",filename), collapse = "/")
+  directory_and_filename <- paste(c("topic_modelling_images",name_file_loaded), collapse = "/")
+  directory_and_filename <- paste(c("topic_modelling_images",file_name), collapse = "/")
   
   png(directory_and_filename, width=12, height=8, units="in", res=300)
   
