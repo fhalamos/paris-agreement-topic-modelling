@@ -30,14 +30,13 @@ data$text <- sub("RT.*", "", data$text)
 colnames(data)<-c("doc_id","text")
 docs <- VCorpus(DataframeSource(data))
 
-
 # PREPROCESSING
 docs <- docs %>% 
   tm_map(content_transformer(tolower)) %>%
   tm_map(tolower) %>% # Remove captialization
   tm_map(removeWords, stopwords("english")) %>% #Remove stopwords
   tm_map(removeWords, c("#environment", "environment", "environmental")) %>% #Remove special stopwords to this case 
-  tm_map(removeWords, c("wild", "wolf", "river", "cdnpoli","florida","usa","fmsphotoaday")) %>% #Remove words of hot topics at that tim. for 2019: "news construction network links"
+  tm_map(removeWords, c("wild", "wolf", "river", "cdnpoli","florida","usa","fmsphotoaday","thanksgiving")) %>% #Remove words of hot topics at that tim. for 2019: "news construction network links"
   tm_map(removeWords, c("will","can", "read","see")) %>%
   tm_map(removeNumbers) %>% #Remove numbers
   tm_map(PlainTextDocument)
@@ -127,22 +126,22 @@ kable(head(frequency, 7), caption="Most common words")
 
 #In case we want to find best k
 #We fit the models and find the one with lowest perplexity. We try k = 2:8
-best_perplexity <- ""
-best_k <- 0
+#best_perplexity <- ""
+#best_k <- 0
 
-for (k in c(2:15))
-{
-  print(k)
-  p = perplexity(LDA(dtm, k = k))
-  print(p)
-  if(best_perplexity=="" | p < best_perplexity)
-  {
-    best_perplexity = p
-    best_k=k
-  }
-}
-best_k
-best_perplexity
+#for (k in c(2:15))
+#{
+#  print(k)
+#  p = perplexity(LDA(dtm, k = k))
+#  print(p)
+#  if(best_perplexity=="" | p < best_perplexity)
+#  {
+#    best_perplexity = p
+#    best_k=k
+#  }
+#}
+#best_k
+#best_perplexity
 
 #We are getting a weird result. As we increase k, perplexity always decreases. So, in the meantime, we will just choose a reasonable k which is readable, like 5.
 lda_model <- LDA(dtm, k = 5)
