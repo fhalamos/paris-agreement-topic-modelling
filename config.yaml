@@ -1,8 +1,8 @@
 countries: ["USA"]
 
-since_date: "2009-01-01"
+since_date: "2010-01-01"
 
-until_date: "2012-12-31"
+until_date: "2013-12-31"
 
 within_radius: "1000mi"
 
