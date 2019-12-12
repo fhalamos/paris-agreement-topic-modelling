@@ -4,7 +4,7 @@ by Felipe Alamos and Bhargavi Ganesh
 
 ## Goal of study
 
-The goal of this study is to analyze if twitter data is a good proxy of masses opinion, and in particular, if tweets reveal the same information as traditional surveys. A full report of the project can be found [here](https://github.com/fhalamos/topics-sentiments-twitter-data/Report.pdf)
+The goal of this study is to analyze if twitter data is a good proxy of masses opinion, and in particular, if tweets reveal the same information as traditional surveys. A full report of the project can be found in the file 'Is Twitter a Proxy for Public Opinion_Alamos-Ganesh.pdf'
 
 ## Files in repo
 
