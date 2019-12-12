@@ -1,4 +1,4 @@
-# Comparing twitter data and surveys data: a topic modelling approach
+# Comparing twitter data and surveys data: a topic modeling and sentiment analysis approach
 by Felipe Alamos and Bhargavi Ganesh
 
 
